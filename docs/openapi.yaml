@@ -1,0 +1,264 @@
+openapi: 3.0.3
+info:
+  title: Drift School API
+  version: 1.0.0
+  description: API для управления расписанием, пользователями и бот-уведомлениями
+
+servers:
+  - url: http://localhost:8080
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [nickname, password]
+      properties:
+        nickname:
+          type: string
+        password:
+          type: string
+
+    SignUpRequest:
+      type: object
+      required: [nickname, phone_number, email, first_name, last_name, birth_date, password]
+      properties:
+        nickname:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        birth_date:
+          type: string
+          format: date
+        password:
+          type: string
+
+    Instructor:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        specialization:
+          type: string
+        phone_number:
+          type: string
+        email:
+          type: string
+
+    FireInstructor:
+      type: object
+      required: [instructor_id]
+      properties:
+        instructor_id:
+          type: integer
+
+    ScheduleCreate:
+      type: object
+      required: [first_name, last_name, available_date, start_time, end_time]
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        available_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+
+    ScheduleDelete:
+      type: object
+      required: [first_name, last_name, available_date, start_time]
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        available_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+
+    ScheduleBook:
+      type: object
+      required: [schedule_id, book]
+      properties:
+        schedule_id:
+          type: integer
+        book:
+          type: boolean
+
+    Review:
+      type: object
+      required: [rating, comment]
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+
+paths:
+  /login:
+    post:
+      summary: Авторизация
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Успешный вход с токеном
+
+  /signup:
+    post:
+      summary: Регистрация
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '200':
+          description: Пользователь зарегистрирован
+
+  /instructors:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Получить всех инструкторов
+      responses:
+        '200':
+          description: Список инструкторов
+    post:
+      security:
+        - bearerAuth: []
+      summary: Добавить инструктора
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instructor'
+      responses:
+        '200':
+          description: Инструктор добавлен
+
+  /instructors/fire:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Удалить инструктора
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FireInstructor'
+      responses:
+        '200':
+          description: Инструктор удалён
+
+  /schedule:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Получить расписание
+      responses:
+        '200':
+          description: Расписание
+    post:
+      security:
+        - bearerAuth: []
+      summary: Создать слот
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCreate'
+      responses:
+        '200':
+          description: Слот создан
+
+  /schedule/delete:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Удалить слот
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleDelete'
+      responses:
+        '200':
+          description: Слот удалён
+
+  /schedule/book:
+    patch:
+      security:
+        - bearerAuth: []
+      summary: Забронировать или отменить слот
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleBook'
+      responses:
+        '200':
+          description: Успешная операция
+
+  /services:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Получить все услуги
+      responses:
+        '200':
+          description: Список услуг
+
+  /reviews:
+    get:
+      summary: Получить все отзывы
+      responses:
+        '200':
+          description: Список отзывов
+    post:
+      summary: Добавить отзыв
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        '200':
+          description: Отзыв добавлен

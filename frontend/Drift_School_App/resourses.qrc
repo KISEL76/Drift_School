@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>style.qss</file>
+        <file>assets/labels/bmw_m4.png</file>
+        <file>assets/labels/tyres.png</file>
+        <file>assets/fonts/Swanston-Bold.ttf</file>
+        <file>assets/fonts/Swanston.ttf</file>
+        <file>assets/labels/Max_Verstappen.png</file>
+        <file>assets/labels/tyres_track.png</file>
+        <file>assets/labels/Toretto.gif</file>
+        <file>assets/labels/Like.gif</file>
+        <file>assets/labels/star.png</file>
+        <file>assets/labels/Cillian_Murphy.gif</file>
+        <file>assets/icon/icon.png</file>
+        <file>assets/labels/tyre_mark.png</file>
+        <file>assets/icon/icon.JPG</file>
+    </qresource>
+</RCC>
